@@ -1,0 +1,17 @@
+{
+  "name": "kafka-retry",
+  "version": "0.0.1",
+  "description": "Kafka retry",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "nest build"
+  },
+  "dependencies": {
+    "kafka-cascade": "^1.0.6",
+    "kafkajs": "^2.2.4"
+  }
+}
+
