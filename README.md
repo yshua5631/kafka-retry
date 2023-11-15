@@ -10,4 +10,5 @@
   ![Alt](./retry2.jpg)
 ## Test for kafka-cascade
   *  node ./cascade.js
+  *  test result
   ![Alt](./cascade.jpg)
