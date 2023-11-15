@@ -8,13 +8,13 @@ const kafka = new Kafka({
 function serviceCallback(message, resolve, reject) {
     try {
       // 在这里处理消息
-      console.log(`接受到消息Received message: ${JSON.stringify(message)}`);
+      console.log(`Received message: ${JSON.stringify(message)}`);
       // 调用 resolve 表示成功处理
       reject(message);
       //resolve();
     } catch (error) {
       // 调用 reject 表示处理失败
-      console.log(`错误发生啦`, error);
+      console.log(`error happens`, error);
       //reject(error);
     }
   }
@@ -29,14 +29,14 @@ function serviceCallback(message, resolve, reject) {
 
   
   async function main() {
-    const topic = 'notification';    // 替换为您想监听的 Kafka 主题
-    const groupId = 'my-group';  // 替换为您的消费者组 ID
+    const topic = 'notification';  
+    const groupId = 'my-group';  
   
     try {
       const cascadeService = await CascadeService(kafka, topic, groupId, serviceCallback, successCallback, dlqCallback);
       
       await cascadeService.setDefaultRoute(3, {
-        timeoutLimit: [1000, 10000, 10000], // 依次延迟1秒，3秒，5秒进行重试
+        timeoutLimit: [1000, 10000, 10000], 
       }).then(() => {
         console.log('Default retry route has been set.');
       }).catch(error => {
@@ -44,12 +44,12 @@ function serviceCallback(message, resolve, reject) {
       });
 
       cascadeService.on('retry', (message) => {
-        console.log('重试的逻辑:', message);
+        console.log('retry callback:', message);
         // 在这里可以添加额外的重试逻辑
       });
 
       cascadeService.on('dlq', (message) => {
-        console.error(`Message sent to DLQ: ${message}`);
+        console.error(`DLQ callback: ${message}`);
       });
 
       await cascadeService.connect();
