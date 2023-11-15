@@ -8,7 +8,7 @@ const kafka = new Kafka({
 function serviceCallback(message, resolve, reject) {
     try {
       // 在这里处理消息
-      console.log(`Received message: ${JSON.stringify(message)}`);
+      console.log(`Received message: ${message}`);
       // 调用 resolve 表示成功处理
       reject(message);
       //resolve();
@@ -36,7 +36,7 @@ function serviceCallback(message, resolve, reject) {
       const cascadeService = await CascadeService(kafka, topic, groupId, serviceCallback, successCallback, dlqCallback);
       
       await cascadeService.setDefaultRoute(3, {
-        timeoutLimit: [1000, 10000, 10000], 
+        timeoutLimit: [10000, 20000, 30000], 
       }).then(() => {
         console.log('Default retry route has been set.');
       }).catch(error => {
