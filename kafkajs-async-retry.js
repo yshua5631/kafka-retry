@@ -17,7 +17,8 @@ async function main() {
     producer,
     groupId: "notification",
     retryTopicNaming: RetryTopicNaming.ATTEMPT_BASED,
-    retryDelays: [1, 2, 3],
+    maxWaitTime: 100000,
+    retryDelays: [2, 2, 2],
     maxRetries: 3,
   });
 
@@ -39,12 +40,39 @@ async function main() {
         if (previousAttempts > 0) {
           console.log(`Retrying message from topic ${originalTopic} ${previousAttempts}`);
         }
+
         // do something with the message (exceptions will be caught and the
         // message will be sent to the appropriate retry or dead-letter topic)
         processMessage(message);
       }
     ),
   });
+
+  // await consumer.run({
+  //   eachBatch: asyncRetryHelper.eachBatch(
+  //     async ({
+  //       batch,
+  //       asyncRetryMessageDetails,
+  //       messageFailureHandler
+  //     }) => {
+  //       for (let message of batch.messages) {
+  //         try {
+  //           const details = asyncRetryMessageDetails(message);
+  //           if (details.previousAttempts > 0) {
+  //             console.log(`Retrying message from topic ${details.originalTopic} ${details.previousAttempts}`);
+  //           }
+  
+  //           // 处理消息的逻辑
+  //           processMessage(message);
+  
+  //         } catch (error) {
+  //           // 如果在处理消息时发生错误，使用 messageFailureHandler 来处理失败的消息
+  //           await messageFailureHandler(error, message);
+  //         }
+  //       }
+  //     }
+  //   ),
+  // });
 
   asyncRetryHelper.on("retry", ({ message, error }) => {
     console.log(`retry call back`);
